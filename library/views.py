@@ -2,6 +2,8 @@ from .filter import LoanFilter
 from .models import Book,UserBook,LoanBook
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 from .pagination import BookPagination,UserBookPagination,LoanPagination
 from .serializer import BookSerializer,UserBookSerializer,LoanSerializer
@@ -12,6 +14,9 @@ class BookAPIViewSet(ModelViewSet):
     pagination_class = BookPagination
     filterset_fields = ['title', 'author','gender','publication_date']
     filter_backends = [DjangoFilterBackend,OrderingFilter]
+    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class UserBookAPIViewSet(ModelViewSet):
     queryset = UserBook.objects.all()
