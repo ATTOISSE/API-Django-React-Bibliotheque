@@ -114,7 +114,7 @@ USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'library.pagination.BookPagination',
-    'PAGE_SIZE': 5,
+    'PAGE_SIZE': 8,
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],

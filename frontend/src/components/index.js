@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getBooks } from "../services/bookService";
+import { getBooksAPI } from "../services/bookService";
 import { Nav } from "../nav";
 
 export const Home = () => {
@@ -7,7 +7,7 @@ export const Home = () => {
     const [img, setImg] = useState([]);
 
     useEffect(() => {
-        getBooks()
+        getBooksAPI()
             .then(response => {
                 setBooks(response.data);
             })
