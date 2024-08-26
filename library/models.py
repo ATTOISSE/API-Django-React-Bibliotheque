@@ -7,6 +7,7 @@ class Book(models.Model):
     gender = models.CharField(max_length=20,db_index=True)
     isbn = models.CharField(max_length=13, unique=True, blank=True, editable=False)
     publication_date = models.DateField()
+    picture = models.ImageField(upload_to='images/',null=True)
     disponibility = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
@@ -32,5 +33,5 @@ class UserBook(models.Model):
 class LoanBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(UserBook, on_delete=models.CASCADE)
-    borrowing_date = models.DateTimeField(default=timezone.now)
+    borrowing_date = models.DateTimeField(auto_now_add=True)
     return_date = models.DateField()

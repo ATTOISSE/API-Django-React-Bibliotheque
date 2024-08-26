@@ -15,8 +15,8 @@ class BookAPIViewSet(ModelViewSet):
     filterset_fields = ['title', 'author','gender','publication_date']
     filter_backends = [DjangoFilterBackend,OrderingFilter]
     
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
 
 class UserBookAPIViewSet(ModelViewSet):
     queryset = UserBook.objects.all()
