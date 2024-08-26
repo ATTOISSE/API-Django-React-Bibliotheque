@@ -31,8 +31,6 @@ export const AddBook = () => {
         console.log(state);
     }
 
-    const handleUpdate = ()
-
     return <>
         <div>
             <form className="container mt-4">
