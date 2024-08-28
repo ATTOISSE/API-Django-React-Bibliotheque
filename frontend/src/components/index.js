@@ -4,24 +4,24 @@ import { Nav } from "../nav";
 
 export const Home = () => {
     const [books, setBooks] = useState(null);
-    const [img, setImg] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
 
     useEffect(() => {
-        getBooksAPI()
+        getBooksAPI(page)
             .then(response => {
                 setBooks(response.data);
+                setTotalPage(Math.ceil(response.data.count/8))
             })
             .catch(error => {
                 console.error('Une erreur est survenue lors du chargement...', error);
             });
-    }, []);
+    }, [page]);
 
-    useEffect(() => {
-        if (books && Array.isArray(books.results)) {
-            const bookImages = books.results.map(book => book.picture);
-            setImg(bookImages);
-        }
-    }, [books]);
+    const handlePageChange = (newPage)=>{
+        setPage(newPage)
+    }
+
     return <>
     <Nav />
         <div className="container">
@@ -50,6 +50,23 @@ export const Home = () => {
                     </div>
                 </div>
             </div>
+            <div className="offset-10">
+            <button
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+                className="btn btn-outline-primary"
+            >
+                <i class="bi bi-arrow-left-short"></i>
+            </button>
+            <span className="mx-2"> {page} </span>
+            <button
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page === totalPage}
+                className="btn btn-primary"
+            >
+                <i class="bi bi-arrow-right-short"></i>
+            </button>
+        </div>
         </div>
     </>
 }

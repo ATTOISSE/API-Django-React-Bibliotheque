@@ -13,16 +13,20 @@ export const bookReducer = (state,action)=>{
             return {
                 ...state,
                 books:state.books
-                .filter(b=>b.id != action.payload)
+                .results.filter(
+                    b=>b.id != action.payload
+                )
             }
         case 'UPDATE_BOOK':
             return{
                 ...state,
-                books:state.books.map(
+                books:state.books
+                .results.find(
                     book => book.id === action.payload.id ?
                         {...book,...action.payload.updates} :
                         book
                 )
+                
             }
         case 'SET_BOOKS':
             return{

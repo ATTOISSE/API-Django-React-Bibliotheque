@@ -1,41 +1,59 @@
-import { useReducer, useState } from "react"
-import { postBookAPI } from "../../services/bookService"
+import { useEffect, useReducer, useState } from "react"
+import { postBookAPI, putBookAPI } from "../../services/bookService"
 import { bookReducer, initialState } from "../reducer/bookReducer"
 import { type } from "@testing-library/user-event/dist/type"
+import { useLocation, useNavigate } from "react-router-dom"
 
 export const AddBook = () => {
-    const [state,dispatch] = useReducer(bookReducer,initialState)
+    const [state, dispatch] = useReducer(bookReducer, initialState)
     const [formBook, setFormBook] = useState({ title: '', author: '', publication_date: '', gender: '', disponibility: true })
+    const { edit } = useLocation().state || { edit: null }
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (edit != null) {
+            setFormBook(edit)
+        }
+    }, [edit])
 
     const handleChange = (e) => {
-        const {name,type,checked,value,files} = e.target 
-        setFormBook(pre=>({
+        const { name, type, checked, value, files } = e.target
+        setFormBook(pre => ({
             ...pre,
-            [name]: type === 'checkbox' ? 
-            checked : type === 'file' ? 
-            files[0] : value
+            [name]: type === 'checkbox' ?
+                checked : type === 'file' ?
+                    files[0] : value
         }))
     }
 
-    const handleSubmit = (e)=>{
+    const handleSubmit = (e) => {
         e.preventDefault()
-        postBookAPI(formBook)
-        .then(response =>{
-            console.log('picture',response.data.picture);
-            
-            dispatch({type:'ADD_BOOK',payload:response.data})
-        })
-        .catch(error =>{
-            console.error("une erreur s'est produit lors de l'ajout",error)
-        })
-        console.log(state);
+        if (edit != null) {
+            putBookAPI(edit.id, formBook)
+            dispatch({
+                type: 'UPDATE_BOOK',
+                payload: {
+                    id: edit.id,
+                    updates: edit
+                }
+            })
+        } else {
+            postBookAPI(formBook)
+                .then(response => {
+                    dispatch({ type: 'ADD_BOOK', payload: response.data })
+                })
+                .catch(error => {
+                    console.error("une erreur s'est produit lors de l'ajout", error)
+                })
+        }
+        navigate('/admin/lists')
     }
 
     return <>
         <div>
             <form className="container mt-4">
                 <div className="card border-light bg-transparent">
-                    <h1 className="border-light card-header text-info text-center"> Ajout d'un livre</h1>
+                    <h1 className="border-light card-header text-info text-center"> {edit != null ? 'Modification' : 'Ajout'} d'un livre</h1>
                     <div className="card-body">
                         <div className="mb-3" >
                             <label htmlFor="title" className="form-label text-info">Titre</label>
@@ -61,7 +79,7 @@ export const AddBook = () => {
                             <label htmlFor="picture" className="form-label text-info">Image</label>
                             <input className={`form-control bg-transparent text-info`} name="picture" type="file" id="picture" onChange={handleChange} />
                         </div>
-                        <button type="submit" className={`btn btn-success col-3 offset-4`} onClick={(event)=>handleSubmit(event)}>Ajouter</button>
+                        <button type="submit" className={`btn btn-${edit != null ? 'warning' : 'success'} col-3 offset-4`} onClick={(event) => handleSubmit(event)}> {edit != null ? 'Modifier' : 'Ajouter'} </button>
                     </div>
                 </div>
             </form>
